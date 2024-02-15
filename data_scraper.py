@@ -5,6 +5,7 @@ from urllib.request import urlopen
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 def twitter_animals():
     driver = webdriver.Firefox()
@@ -23,11 +24,11 @@ def reddit_top_day():
 
     # scroll to end of screen to load more content
 
-    # for i in range(20):
-    #     driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")  
-    #     time.sleep(1)
+    for i in range(20):
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")  
+        time.sleep(1)
 
-    # time.sleep(5)
+    time.sleep(5)
 
     soup = BeautifulSoup(driver.page_source, "lxml")
     articles = soup.body.find_all("shreddit-post")
@@ -41,8 +42,7 @@ def reddit_top_day():
         article_data[idx]["href"] = i.get("content-href")
         article_data[idx]["type"] = i.get("post-type")
 
-    driver.quit()
-    return article_data
+    article_data_dataframe = pd.DataFrame(article_data).transpose()
 
-if __name__ == "__main__":
-    raw_scraped_data = reddit_top_day()
+    driver.quit()
+    return article_data_dataframe
